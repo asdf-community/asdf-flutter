@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+get_jq_filename() {
+  case "$(uname -s)" in
+    Linux)
+      case "$(uname -m)" in
+        x86_64) echo jq-linux64 ;;
+    esac ;;
+    Darwin)
+      case "$(uname -m)" in
+        x86_64) echo jq-osx-amd64 ;;
+    esac ;;
+  esac
+}
+
+download_jq_if_not_exists() {
+  
+  if [ ! -e "${jq}" ]
+  then
+    curl -sL "https://github.com/stedolan/jq/releases/latest/download/$(get_jq_filename)" -o "${jq}"
+    chmod +x "${jq}"
+  fi
+}

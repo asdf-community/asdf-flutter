@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+currentDir="$(dirname $0)"
+jq="${currentDir}/jq"
+
+source "${currentDir}/jq-downloader"
+
+list_all() {
+
+  local versionListUrl="https://storage.googleapis.com/flutter_infra/releases/releases_macos.json"
+  
+  if [ "$(uname -s)" == "Linux" ]; then
+    versionListUrl="https://storage.googleapis.com/flutter_infra/releases/releases_linux.json"
+  fi
+  
+  echo $(curl -sL $versionListUrl | "${jq}" -r '.releases | map(.version[1:] + "-" + .channel) | sort | join(" ")')
+}
+
+download_jq_if_not_exists
+list_all
