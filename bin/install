@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-#!/usr/bin/env bash
-
 currentDir="$(dirname $0)"
 jq="${currentDir}/jq"
 
