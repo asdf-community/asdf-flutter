@@ -13,7 +13,7 @@ install() {
     exit 1
   fi
   
-  local urlPrefix="https://storage.googleapis.com/flutter_infra/releases/"
+  local urlPrefix="https://storage.googleapis.com/flutter_infra/releases"
   
   local versionListUrl="https://storage.googleapis.com/flutter_infra/releases/releases_macos.json"
   
@@ -21,16 +21,15 @@ install() {
     versionListUrl="https://storage.googleapis.com/flutter_infra/releases/releases_linux.json"
   fi
   
-  local file=$(curl -sL $versionListUrl | "${jq}" -r --arg VERSION "${ASDF_INSTALL_VERSION}" '.releases | map({version: (.version[1:] + "-" + .channel), url: (.archive)}) | map(select(.version == $VERSION)) | .[].url')
-  echo "version: ${ASDF_INSTALL_VERSION}"
-  echo "path: ${ASDF_INSTALL_PATH}"
-  echo "${urlPrefix}/${file}"
-  # mkdir -p "$ASDF_INSTALL_PATH"
-  # cd "$ASDF_INSTALL_PATH" || exit 1
-  # curl -OJL https://services.gradle.org/distributions/gradle-${ASDF_INSTALL_VERSION}-bin.zip
-  # unzip gradle-${ASDF_INSTALL_VERSION}-bin.zip
-  # rm gradle-${ASDF_INSTALL_VERSION}-bin.zip
-  # mv gradle-${ASDF_INSTALL_VERSION}/* .
+  local filePath=$(curl -sL $versionListUrl | "${jq}" -r --arg VERSION "${ASDF_INSTALL_VERSION}" '.releases | map({version: (.version[1:] + "-" + .channel), url: (.archive)}) | map(select(.version == $VERSION)) | .[].url')
+  local url="${urlPrefix}/${filePath}"
+  local fileName="${url##*/}"
+
+  mkdir -p "$ASDF_INSTALL_PATH"
+  cd "$ASDF_INSTALL_PATH" || exit 1
+  curl -OJL "${url}"
+  tar xf ${fileName} --strip 1
+  rm -f ${fileName}
 }
 
 download_jq_if_not_exists
