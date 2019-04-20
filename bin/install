@@ -6,7 +6,8 @@ jq="${currentDir}/jq"
 source "${currentDir}/jq-downloader"
 
 install() {
-  if [ "$ASDF_INSTALL_TYPE" == "ref" ]; then
+
+  if [ "${ASDF_INSTALL_TYPE}" == "ref" ]; then
     echo "Only binary versions are supported"
     exit 1
   fi
@@ -19,15 +20,21 @@ install() {
     versionListUrl="https://storage.googleapis.com/flutter_infra/releases/releases_linux.json"
   fi
   
-  local filePath=$(curl -sL $versionListUrl | "${jq}" -r --arg VERSION "${ASDF_INSTALL_VERSION}" '.releases | map({version: (.version[1:] + "-" + .channel), url: (.archive)}) | map(select(.version == $VERSION)) | .[].url')
+  local filePath=$(curl -sL "${versionListUrl}" | "${jq}" -r --arg VERSION "${ASDF_INSTALL_VERSION}" '.releases | map({version: (.version[1:] + "-" + .channel), url: (.archive)}) | map(select(.version == $VERSION)) | .[].url')
+
+  if [ -z "${filePath}" ]; then
+    echo "Cannot find the download url for the version: ${ASDF_INSTALL_VERSION}"
+    exit 1
+  fi
+
   local url="${urlPrefix}/${filePath}"
   local fileName="${url##*/}"
 
-  mkdir -p "$ASDF_INSTALL_PATH"
-  cd "$ASDF_INSTALL_PATH" || exit 1
+  mkdir -p "${ASDF_INSTALL_PATH}"
+  cd "${ASDF_INSTALL_PATH}" || exit 1
   curl -OJL "${url}"
-  tar xf ${fileName} --strip 1
-  rm -f ${fileName}
+  tar xf "${fileName}" --strip 1
+  rm -f "${fileName}"
 }
 
 download_jq_if_not_exists
