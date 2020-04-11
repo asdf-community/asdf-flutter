@@ -20,7 +20,9 @@ install() {
     versionListUrl="https://storage.googleapis.com/flutter_infra/releases/releases_linux.json"
   fi
   
-  local filePath=$(curl -sL "${versionListUrl}" | "${jq}" -r --arg VERSION "${ASDF_INSTALL_VERSION}" '.releases | map({version: (.version[1:] + "-" + .channel), url: (.archive)}) | map(select(.version == $VERSION)) | .[].url')
+  local escapedInstallVersion=$(echo $ASDF_INSTALL_VERSION | sed 's/\./\\\./g;s/\+/\\\+/g')
+
+  local filePath=$(curl -sL "${versionListUrl}" | "${jq}" -r --arg VERSION "${escapedInstallVersion}" '.releases[] | select((.version + "-" + .channel) | test("^v?" + $VERSION)) | .archive')
 
   if [ -z "${filePath}" ]; then
     echo "Cannot find the download url for the version: ${ASDF_INSTALL_VERSION}"
