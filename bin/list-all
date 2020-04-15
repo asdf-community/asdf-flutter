@@ -13,7 +13,7 @@ list_all() {
     versionListUrl="https://storage.googleapis.com/flutter_infra/releases/releases_linux.json"
   fi
   
-  echo $(curl -sL "${versionListUrl}" | "${jq}" -r '.releases | map(.version[1:] + "-" + .channel) | sort | join(" ")')
+  echo $(curl -sL "${versionListUrl}" | "${jq}" -r '.releases[].version |= gsub("^v"; "") | .releases | map(.version + "-" + .channel) | reverse | join(" ")')
 }
 
 download_jq_if_not_exists
