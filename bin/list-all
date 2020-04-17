@@ -4,13 +4,14 @@ currentDir="$(dirname $0)"
 jq="${currentDir}/jq"
 
 source "${currentDir}/jq-downloader"
+source "${currentDir}/utils.sh"
 
 list_all() {
 
-  local versionListUrl="https://storage.googleapis.com/flutter_infra/releases/releases_macos.json"
+  local versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra/releases/releases_macos.json"
   
   if [ "$(uname -s)" == "Linux" ]; then
-    versionListUrl="https://storage.googleapis.com/flutter_infra/releases/releases_linux.json"
+    versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra/releases/releases_linux.json"
   fi
   
   echo $(curl -sL "${versionListUrl}" | "${jq}" -r '.releases[].version |= gsub("^v"; "") | .releases | map(.version + "-" + .channel) | reverse | join(" ")')
