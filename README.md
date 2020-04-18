@@ -7,3 +7,7 @@
 ```
 asdf plugin-add flutter
 ```
+
+## Configure
+
+If you have problems with accessing to google, you can set the `FLUTTER_STORAGE_BASE_URL` environment variable to change it but structure must be same with Google. Default value is `https://storage.googleapis.com`.

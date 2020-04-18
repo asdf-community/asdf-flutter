@@ -4,6 +4,7 @@ currentDir="$(dirname $0)"
 jq="${currentDir}/jq"
 
 source "${currentDir}/jq-downloader"
+source "${currentDir}/utils.sh"
 
 install() {
 
@@ -12,12 +13,12 @@ install() {
     exit 1
   fi
   
-  local urlPrefix="https://storage.googleapis.com/flutter_infra/releases"
+  local urlPrefix="${FLUTTER_STORAGE_BASE_URL}/flutter_infra/releases"
   
-  local versionListUrl="https://storage.googleapis.com/flutter_infra/releases/releases_macos.json"
+  local versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra/releases/releases_macos.json"
   
   if [ "$(uname -s)" == "Linux" ]; then
-    versionListUrl="https://storage.googleapis.com/flutter_infra/releases/releases_linux.json"
+    versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra/releases/releases_linux.json"
   fi
   
   local escapedInstallVersion=$(echo $ASDF_INSTALL_VERSION | sed 's/\./\\\./g;s/\+/\\\+/g')
