@@ -36,7 +36,7 @@ install() {
   mkdir -p "${ASDF_INSTALL_PATH}"
   cd "${ASDF_INSTALL_PATH}" || exit 1
   curl -OJL "${url}"
-  tar xf "${fileName}" --strip 1
+  bsdtar --strip-components=1 -xvf "${fileName}"
   rm -f "${fileName}"
 }
 
