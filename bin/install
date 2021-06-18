@@ -13,12 +13,12 @@ install() {
     exit 1
   fi
   
-  local urlPrefix="${FLUTTER_STORAGE_BASE_URL}/flutter_infra/releases"
+  local urlPrefix="${FLUTTER_STORAGE_BASE_URL}/flutter_infra_release/releases"
   
-  local versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra/releases/releases_macos.json"
+  local versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra_release/releases/releases_macos.json"
   
   if [ "$(uname -s)" == "Linux" ]; then
-    versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra/releases/releases_linux.json"
+    versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra_release/releases/releases_linux.json"
   fi
   
   local escapedInstallVersion=$(echo $ASDF_INSTALL_VERSION | sed 's/\./\\\./g;s/\+/\\\+/g')
