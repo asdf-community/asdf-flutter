@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 currentDir="$(dirname $0)"
-jq="${currentDir}/jq"
 
 source "${currentDir}/jq-downloader"
 source "${currentDir}/utils.sh"
@@ -23,7 +22,7 @@ install() {
   
   local escapedInstallVersion=$(echo $ASDF_INSTALL_VERSION | sed 's/\./\\\./g;s/\+/\\\+/g')
 
-  local filePath=$(curl -sL "${versionListUrl}" | "${jq}" -r --arg VERSION "${escapedInstallVersion}" '.releases[] | select((.version + "-" + .channel) | test("^v?" + $VERSION)) | .archive')
+  local filePath=$(curl -sL "${versionListUrl}" | "${JQ_BIN}" -r --arg VERSION "${escapedInstallVersion}" '.releases[] | select((.version + "-" + .channel) | test("^v?" + $VERSION)) | .archive')
 
   if [ -z "${filePath}" ]; then
     echo "Cannot find the download url for the version: ${ASDF_INSTALL_VERSION}"

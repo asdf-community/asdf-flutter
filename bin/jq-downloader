@@ -2,22 +2,28 @@
 
 get_jq_filename() {
   case "$(uname -s)" in
-    Linux)
-      case "$(uname -m)" in
-        x86_64) echo jq-linux64 ;;
+  Linux)
+    case "$(uname -m)" in
+    x86_64) echo jq-linux64 ;;
     esac ;;
-    Darwin)
-      case "$(uname -m)" in
-        x86_64) echo jq-osx-amd64 ;;
-        arm64) echo jq-osx-amd64 ;;
+  Darwin)
+    case "$(uname -m)" in
+    x86_64) echo jq-osx-amd64 ;;
+    arm64) echo jq-osx-amd64 ;;
     esac ;;
   esac
 }
 
 download_jq_if_not_exists() {
-  if [ ! -e "${jq}" ]
-  then
+
+  jq_path="$(type -p jq || echo ${currentDir}/jq)"
+
+  if [[ -z "$(type -p ${jq_path})" ]]; then
+    echo "jq does not exist in PATH. Downloading it."
     curl -sL "https://github.com/stedolan/jq/releases/latest/download/$(get_jq_filename)" -o "${jq}"
-    chmod +x "${jq}"
+    chmod +x "${jq_path}"
   fi
+
+  export JQ_BIN="${jq_path}"
+  echo "jq is now in ${JQ_BIN}"
 }
