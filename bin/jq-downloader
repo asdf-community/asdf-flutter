@@ -20,7 +20,7 @@ download_jq_if_not_exists() {
 
   if [[ -z "$(type -p ${jq_path})" ]]; then
     echo "jq does not exist in PATH. Downloading it."
-    curl -sL "https://github.com/stedolan/jq/releases/latest/download/$(get_jq_filename)" -o "${jq}"
+    curl -sL "https://github.com/stedolan/jq/releases/latest/download/$(get_jq_filename)" -o "${jq_path}"
     chmod +x "${jq_path}"
   fi
 
