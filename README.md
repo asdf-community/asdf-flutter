@@ -12,7 +12,16 @@ asdf plugin-add flutter
 
 If you have problems with accessing to google, you can set the `FLUTTER_STORAGE_BASE_URL` environment variable to change it but structure must be same with Google. Default value is `https://storage.googleapis.com`.
 
+
 ## Troubleshooting
+
+### VSCode
+<img width="668" alt="image" src="https://user-images.githubusercontent.com/877327/158042623-290554da-0b9d-4fe0-b91b-c85b9c48e2d1.png">
+
+To fix the "Could not find a Flutter SDK" error, you can set the `FLUTTER_ROOT` environment variable in your `.bashrc` or `.zshrc` file:
+```bash
+export FLUTTER_ROOT="$(asdf where flutter)"
+```
 
 ### Bad CPU type in executable
 
