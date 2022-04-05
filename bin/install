@@ -21,12 +21,8 @@ install() {
   fi
   
   local escapedInstallVersion=$(echo $ASDF_INSTALL_VERSION | sed 's/\./\\\./g;s/\+/\\\+/g')
-  local arch="x64"
-  if [ "$(uname -s)" == "Darwin" ] && [ "$(uname -m)" == "arm64" ]; then
-    arch="arm64"
-  fi
 
-  local filePath=$(curl -sL "${versionListUrl}" | "${JQ_BIN}" -r --arg VERSION "${escapedInstallVersion}" --arg ARCH "${arch}" '.releases[] | select((.version + "-" + .channel) | test("^v?" + $VERSION)) | select((has("dart_sdk_arch") | not) or (.dart_sdk_arch == $ARCH)) | .archive')
+  local filePath=$(curl -sL "${versionListUrl}" | "${JQ_BIN}" -r --arg VERSION "${escapedInstallVersion}" '.releases[] | select((.version + "-" + .channel) | test("^v?" + $VERSION)) | .archive')
 
   if [ -z "${filePath}" ]; then
     echo "Cannot find the download url for the version: ${ASDF_INSTALL_VERSION}"
