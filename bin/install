@@ -46,7 +46,7 @@ install() {
   if [ "${fileName##*.}" == "zip" ]; then
     local tmpdir="$(mktemp -d)"
     unzip -d "${tmpdir}" "${fileName}"
-    mv "${tmpdir}/flutter"/* "${ASDF_INSTALL_PATH}/"
+    ( shopt -s dotglob && mv "${tmpdir}/flutter"/* "${ASDF_INSTALL_PATH}/" )
   else
     tar xf "${fileName}" --strip 1
   fi
