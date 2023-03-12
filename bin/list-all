@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
 
 currentDir="$(dirname $0)"
 
@@ -6,12 +8,7 @@ source "${currentDir}/jq-downloader"
 source "${currentDir}/utils.sh"
 
 list_all() {
-
-  local versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra_release/releases/releases_macos.json"
-
-  if [ "$(uname -s)" == "Linux" ]; then
-    versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra_release/releases/releases_linux.json"
-  fi
+  local versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra_release/releases/releases_${OS}.json"
 
   echo $(curl -sL "${versionListUrl}" | "${JQ_BIN}" -r '.releases[].version |= gsub("^v"; "") | .releases | map(.version + "-" + .channel) | reverse | join(" ")')
 }

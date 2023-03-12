@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
 
 get_jq_filename() {
-  case "$(uname -s)" in
-  Linux)
+  case "${OS}" in
+  linux)
     case "$(uname -m)" in
     x86_64) echo jq-linux64 ;;
     esac ;;
-  Darwin)
+  macos)
     case "$(uname -m)" in
     x86_64) echo jq-osx-amd64 ;;
     arm64) echo jq-osx-amd64 ;;

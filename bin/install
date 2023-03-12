@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
 
 currentDir="$(dirname $0)"
 
@@ -14,17 +16,13 @@ install() {
   
   local urlPrefix="${FLUTTER_STORAGE_BASE_URL}/flutter_infra_release/releases"
   
-  local versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra_release/releases/releases_macos.json"
-  
-  if [ "$(uname -s)" == "Linux" ]; then
-    versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra_release/releases/releases_linux.json"
-  fi
+  local versionListUrl="${FLUTTER_STORAGE_BASE_URL}/flutter_infra_release/releases/releases_${OS}.json"
   
   local escapedInstallVersion=$(echo $ASDF_INSTALL_VERSION | sed 's/\./\\\./g;s/\+/\\\+/g')
   local jsonResponse=$(curl -sL "${versionListUrl}" | "${JQ_BIN}" --arg VERSION "${escapedInstallVersion}" '.releases[] | select((.version + "-" + .channel) | test("^v?" + $VERSION))')
   local jsonResponseLength=$(echo "${jsonResponse}" | jq -s 'length')
   local filePath=$(echo "${jsonResponse}" | jq -r '.archive')
-  if [ "$(uname -s)" == "Darwin" ] && [ ${jsonResponseLength} -gt 1 ]; then
+  if [ "${OS}" == 'macos' ] && [ ${jsonResponseLength} -gt 1 ]; then
     local arch="x64"
     if [ "$(uname -m)" == "arm64" ]; then
       arch="arm64"
