@@ -29,7 +29,9 @@ install() {
     if [ "$(uname -m)" == "arm64" ]; then
       arch="arm64"
     fi
-    filePath=$(echo "${jsonResponse}" | jq -r --arg ARCH "${arch}" '. | select(.dart_sdk_arch == $ARCH) | .archive')
+
+    channel=$(echo "$ASDF_INSTALL_VERSION" | grep -oE '(stable|beta|dev)$' || echo "stable")
+    filePath=$(echo "${jsonResponse}" | jq -r --arg ARCH "${arch}" --arg CHANNEL "${channel}" '. | select(.dart_sdk_arch == $ARCH and .channel == $CHANNEL) | .archive')
   fi
 
   if [ -z "${filePath}" ]; then
