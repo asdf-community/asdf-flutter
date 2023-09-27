@@ -22,8 +22,8 @@ install() {
   
   local escapedInstallVersion=$(echo $ASDF_INSTALL_VERSION | sed 's/\./\\\./g;s/\+/\\\+/g')
   local jsonResponse=$(curl -sL "${versionListUrl}" | "${JQ_BIN}" --arg VERSION "${escapedInstallVersion}" '.releases[] | select((.version + "-" + .channel) | test("^v?" + $VERSION))')
-  local jsonResponseLength=$(echo "${jsonResponse}" | jq -s 'length')
-  local filePath=$(echo "${jsonResponse}" | jq -r '.archive')
+  local jsonResponseLength=$(echo "${jsonResponse}" | "${JQ_BIN}" -s 'length')
+  local filePath=$(echo "${jsonResponse}" | "${JQ_BIN}" -r '.archive')
   if [ "$(uname -s)" == "Darwin" ] && [ ${jsonResponseLength} -gt 1 ]; then
     local arch="x64"
     if [ "$(uname -m)" == "arm64" ]; then
@@ -31,7 +31,7 @@ install() {
     fi
 
     channel=$(echo "$ASDF_INSTALL_VERSION" | grep -oE '(stable|beta|dev)$' || echo "stable")
-    filePath=$(echo "${jsonResponse}" | jq -r --arg ARCH "${arch}" --arg CHANNEL "${channel}" '. | select(.dart_sdk_arch == $ARCH and .channel == $CHANNEL) | .archive')
+    filePath=$(echo "${jsonResponse}" | "${JQ_BIN}" -r --arg ARCH "${arch}" --arg CHANNEL "${channel}" '. | select(.dart_sdk_arch == $ARCH and .channel == $CHANNEL) | .archive')
   fi
 
   if [ -z "${filePath}" ]; then
