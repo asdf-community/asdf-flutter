@@ -2,6 +2,10 @@
 
 [Flutter](https://flutter.dev/) plugin for the [asdf version manager](https://github.com/asdf-vm/asdf). This includes both **flutter** and **dart**.
 
+## Dependencies
+
+- [jq](https://jqlang.github.io/jq/download/)
+
 ## Install
 
 ```
