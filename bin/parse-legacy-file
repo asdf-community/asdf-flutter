@@ -12,4 +12,5 @@ parse_fvm_version() {
     echo "$flutter_sdk_version"
 }
 
+download_jq_if_not_exists
 parse_fvm_version $1
