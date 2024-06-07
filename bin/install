@@ -45,7 +45,14 @@ install() {
   mkdir -p "${ASDF_INSTALL_PATH}"
   cd "${ASDF_INSTALL_PATH}" || exit 1
   curl -OJL "${url}"
-  tar xf "${fileName}" --strip 1
+  if [ "$(uname -s)" == "Linux" ]; then
+    tar xf "${fileName}" --strip 1
+  else
+    unzip -o "$fileName" -d .tmp
+    shopt -s dotglob
+    mv .tmp/*/* ./
+    rm -rf .tmp
+  fi
   rm -f "${fileName}"
 }
 
