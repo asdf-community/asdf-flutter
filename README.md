@@ -5,7 +5,7 @@
 ## Install
 
 ```
-asdf plugin-add flutter
+asdf plugin add flutter
 ```
 
 ## Configure
