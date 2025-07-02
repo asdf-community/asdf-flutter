@@ -31,7 +31,8 @@ install() {
     fi
 
     channel=$(echo "$ASDF_INSTALL_VERSION" | grep -oE '(stable|beta|dev)$' || echo "stable")
-    filePath=$(echo "${jsonResponse}" | "${JQ_BIN}" -r --arg ARCH "${arch}" --arg CHANNEL "${channel}" '. | select(.dart_sdk_arch == $ARCH and .channel == $CHANNEL) | .archive')
+    filePath=$(echo "${jsonResponse}" | "${JQ_BIN}" -r --arg ARCH "${arch}" --arg CHANNEL "${channel}" \
+      '. | select(.dart_sdk_arch == $ARCH and .channel == $CHANNEL) | .archive' | head -n 1 )
   fi
 
   if [ -z "${filePath}" ]; then
