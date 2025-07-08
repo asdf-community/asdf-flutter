@@ -16,6 +16,15 @@ asdf plugin add flutter
 
 If you have problems with accessing to google, you can set the `FLUTTER_STORAGE_BASE_URL` environment variable to change it but structure must be same with Google. Default value is `https://storage.googleapis.com`.
 
+## FVM support
+
+[FVM](https://fvm.app/) is one of major version manager for Flutter.
+
+asdf uses a `.tool-versions` file for auto-switching between software versions. To ease migration, you can have it read an existing `.fvm/fvm_config.json` file to find out what version of Flutter should be used. To do this, add the following to `$HOME/.asdfrc`:
+
+```
+legacy_version_file = yes
+```
 
 ## Troubleshooting
 

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+currentDir="$(dirname $0)"
+
+source "${currentDir}/jq-downloader"
+
+parse_fvm_version() {
+    local file_path="$1"
+    local flutter_sdk_version
+
+    flutter_sdk_version=$(jq -r '.flutterSdkVersion' "$file_path")
+    echo "$flutter_sdk_version"
+}
+
+download_jq_if_not_exists
+parse_fvm_version $1
