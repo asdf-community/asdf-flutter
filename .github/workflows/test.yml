@@ -1,0 +1,43 @@
+name: Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    name: bats (${{ matrix.os }} / ${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # x86_64 Linux — the primary CI target. Also serves as the "stamps
+        # must be preserved" guard for the bundled x64 SDK.
+        # aarch64 Linux — guards the regression documented in ADR001: if the
+        # install script stops invalidating the bundled stamps on non-x86_64
+        # hosts, the "stamps are removed" tests fail here.
+        include:
+          - os: linux
+            arch: x86_64
+            runner: ubuntu-24.04
+          - os: linux
+            arch: arm64
+            runner: ubuntu-24.04-arm
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bats
+        run: |
+          git clone --depth 1 https://github.com/bats-core/bats-core.git /tmp/bats-core
+          /tmp/bats-core/install.sh "$HOME/.local"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Report architecture
+        run: |
+          echo "uname -s = $(uname -s)"
+          echo "uname -m = $(uname -m)"
+
+      - name: Run tests
+        run: bats test/

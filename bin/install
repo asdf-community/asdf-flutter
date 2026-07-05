@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-currentDir="$(dirname $0)"
+currentDir="$(dirname "${BASH_SOURCE[0]}")"
 
 source "${currentDir}/jq-downloader"
 source "${currentDir}/utils.sh"
@@ -54,7 +54,31 @@ install() {
     tar xf "${fileName}" --strip 1
   fi
   rm -f "${fileName}"
+
+  invalidate_bundled_stamps_for_non_x64_linux
 }
 
-download_jq_if_not_exists
-install
+# The official Linux tarball ships with an x64 dart-sdk pre-bundled in
+# bin/cache/dart-sdk/ plus matching engine-dart-sdk.stamp and
+# flutter_tools.stamp. On non-x64 hosts (arm64, riscv64) the bundled dart
+# binary is the wrong architecture. Because the stamps match, Flutter's
+# self-heal in bin/internal/update_dart_sdk.sh (which is only invoked when
+# flutter_tools.stamp is invalid) never runs. Removing both stamps forces
+# update_dart_sdk.sh to run on first invocation; it detects the host arch
+# and fetches the correct dart-sdk (e.g. dart-sdk-linux-arm64.zip).
+invalidate_bundled_stamps_for_non_x64_linux() {
+  if [ "$(uname -s)" == "Linux" ]; then
+    case "$(uname -m)" in
+      x86_64) ;;
+      *)
+        rm -f "${ASDF_INSTALL_PATH}/bin/cache/engine-dart-sdk.stamp"
+        rm -f "${ASDF_INSTALL_PATH}/bin/cache/flutter_tools.stamp"
+        ;;
+    esac
+  fi
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  download_jq_if_not_exists
+  install
+fi

@@ -46,4 +46,31 @@ Apple will prompt you to install Rosetta if you open a GUI application but not i
 softwareupdate --install-rosetta
 ```
 
+### `cannot execute binary file: Exec format error` on Linux ARM64
+
+The official Linux release tarball ships with an **x86-64** `dart-sdk` bundled
+under `bin/cache/dart-sdk/`, regardless of host architecture. On an `aarch64`
+(or `riscv64`) host this binary cannot run, and the first `flutter` invocation
+fails with:
+
+```
+.../bin/internal/shared.sh: line 273:
+.../bin/cache/dart-sdk/bin/dart: cannot execute binary file: Exec format error
+```
+
+Note that this error surfaces from Flutter's own bootstrap script, not from the
+plugin's `install` step — the install itself reports success. Flutter ships two
+stamp files (`engine-dart-sdk.stamp` and `flutter_tools.stamp`) that match on
+first run, which causes Flutter's self-heal (`update_dart_sdk.sh`, the script
+that would normally detect the host architecture and fetch a matching
+dart-sdk) to be skipped entirely.
+
+The plugin now works around this by deleting both stamps after extraction on
+non-x86_64 Linux hosts, so that `update_dart_sdk.sh` runs on first invocation
+and fetches the correct dart-sdk (e.g. `dart-sdk-linux-arm64.zip`). The first
+`flutter` command will incur a one-time download (~220 MB) to replace the
+bundled dart-sdk.
+
+See [ADR001: Linux ARM64 Support](./docs/adr/adr001-linux-arm64-support.md)
+for the full diagnosis and rationale.
 
